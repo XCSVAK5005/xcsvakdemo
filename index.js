@@ -5,6 +5,10 @@ import pkg from "pg";
 const { Pool } = pkg;
 
 const app = express();
+
+// =======================
+// MIDDLEWARE
+// =======================
 app.use(cors());
 app.use(express.json());
 
@@ -21,21 +25,26 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// TEST KONEKSI DB
+// TEST DB CONNECT
 pool.connect()
   .then(() => console.log("DATABASE CONNECTED ✅"))
   .catch(err => console.error("DATABASE ERROR ❌", err));
 
 // =======================
-// ROOT TEST
+// ROUTES
 // =======================
+
+// ROOT
 app.get("/", (req, res) => {
   res.send("API RUNNING 🔥");
 });
 
-// =======================
+// HEALTH CHECK (PENTING BUAT RAILWAY)
+app.get("/health", (req, res) => {
+  res.send("OK");
+});
+
 // LOGIN
-// =======================
 app.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -60,9 +69,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// =======================
 // ADD USER
-// =======================
 app.post("/add-user", async (req, res) => {
   try {
     const { username, password, role } = req.body;
@@ -81,8 +88,8 @@ app.post("/add-user", async (req, res) => {
 });
 
 // =======================
-// START SERVER
+// START SERVER (FIX RAILWAY)
 // =======================
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log("Server jalan di port " + PORT);
 });
