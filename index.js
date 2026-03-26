@@ -59,6 +59,19 @@ app.post("/add-user", async (req, res) => {
   res.json({ success: true });
 });
 
+// GET ALL USERS
+app.get("/users", async (req, res) => {
+  const result = await pool.query("SELECT * FROM users ORDER BY id DESC");
+  res.json(result.rows);
+});
+
+// DELETE USER
+app.post("/delete-user", async (req, res) => {
+  const { id } = req.body;
+  await pool.query("DELETE FROM users WHERE id=$1", [id]);
+  res.json({ success: true });
+});
+
 app.listen(PORT, "0.0.0.0", () => {
   console.log("Server jalan di port " + PORT);
 });
